@@ -6,9 +6,9 @@ import re
 from typing import List
 
 # global variables
-DEBUG = False
+DEBUG = True
 LTI_FILEPATH = os.path.join(os.path.dirname(__file__), 'LATEST_TWEET_ID')
-KATAKANA_REGEX = re.compile('[\u30A1-\u30FF]+')
+KATAKANA_REGEX = re.compile(r'[\u30A1-\u30FF]+')
 
 # MeCab
 mcb = MeCab.Tagger(
@@ -26,11 +26,17 @@ api = tweepy.API(auth)
 
 
 def main() -> None:
-    tl: List[tweepy.Status] = get_timeline()
-    for t in tl:
-        res = detect_and_correct(t.text)
-        if len(res) > 0:
-            reply(t, res)
+    if DEBUG:
+        s = '0'
+        while s != '':
+            s = input('DEBUG MODE > ')
+            print(detect_and_correct(s))
+    else:
+        tl: List[tweepy.Status] = get_timeline()
+        for t in tl:
+            res = detect_and_correct(t.text)
+            if len(res) > 0:
+                reply(t, res)
 
 
 def get_timeline() -> List[tweepy.Status]:
@@ -67,7 +73,12 @@ def detect_and_correct(tweet: str) -> List[str]:
 
     for line in p:
         print(line)
-        if (w := line[0])[-1] == 'ー' and len(w) > 1 and KATAKANA_REGEX.fullmatch(w) is not None:
+        if (
+            (w := line[0])[-1] == 'ー'
+            and len(w) > 1
+            and KATAKANA_REGEX.fullmatch(w) is not None
+            and w[0] != 'ー'
+        ):
             while w[-1] == 'ー':
                 w = w[:-1]
             res.append(w)
