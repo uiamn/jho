@@ -1,6 +1,6 @@
 # JHO
 
-A bot that sends out a reply when it finds a Tweet that does not conform to JIS Z8301 Annex G.
+A bot that sends out a reply when it finds a Tweet that does not conform to JIS Z8301:2008 Annex G.
 
 ## Getting Started
 ### setup
