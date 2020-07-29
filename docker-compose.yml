@@ -4,6 +4,6 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    container_name: gokana
+    container_name: jho
     volumes:
       - ./src:/src
