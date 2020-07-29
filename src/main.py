@@ -9,6 +9,7 @@ from typing import List
 DEBUG = True
 LTI_FILEPATH = os.path.join(os.path.dirname(__file__), 'LATEST_TWEET_ID')
 KATAKANA_REGEX = re.compile(r'[\u30A1-\u30FF]+')
+IGNORE_CHARS_REGEX = re.compile(r'[ァィゥェォャュョー]')
 
 # MeCab
 mcb = MeCab.Tagger(
@@ -64,6 +65,30 @@ def get_timeline() -> List[tweepy.Status]:
     return tl
 
 
+def is_conform(t: str) -> bool:
+    """JISに適合してゐるかをチェックする関数
+
+    Args:
+        t (str): チェックしたい語
+
+    Returns:
+        bool: 適合してゐるかどうか 具体的には以下のいづれかを満たす場合にはTrueを返す
+        * 最初が"ー"である(この条件を満たす場合には形態素解析にバグが無い限り"ー"のみからなる文字列のため)
+        * 最後が"ー"ではない
+        * カタカナからなる語ではない
+        * 文字列長が3以下
+        * tの音数が2音以下
+        ただし音数とは，最後の長音を含めた総文字数-文字列に含まれる"ァィゥェォャュョー"の個数のことを云ふ
+    """
+    return (
+        t[0] == 'ー'
+        or t[-1] != 'ー'
+        or KATAKANA_REGEX.fullmatch(t) is None
+        or len(t) <= 3
+        or len(t) - len(IGNORE_CHARS_REGEX.findall(t)) <= 2
+    )
+
+
 def detect_and_correct(tweet: str) -> List[str]:
     p = mcb.parse(tweet)
     p = p.split('\n')[:-2]
@@ -73,12 +98,7 @@ def detect_and_correct(tweet: str) -> List[str]:
 
     for line in p:
         print(line)
-        if (
-            (w := line[0])[-1] == 'ー'
-            and len(w) > 1
-            and KATAKANA_REGEX.fullmatch(w) is not None
-            and w[0] != 'ー'
-        ):
+        if not is_conform(w := line[0]):
             while w[-1] == 'ー':
                 w = w[:-1]
             res.append(w)
