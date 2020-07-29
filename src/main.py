@@ -6,7 +6,7 @@ import re
 from typing import List
 
 # global variables
-DEBUG = True
+DEBUG = False
 LTI_FILEPATH = os.path.join(os.path.dirname(__file__), 'LATEST_TWEET_ID')
 KATAKANA_REGEX = re.compile(r'[\u30A1-\u30FF]+')
 IGNORE_CHARS_REGEX = re.compile(r'[ァィゥェォャュョー]')
@@ -113,7 +113,7 @@ def reply(status: tweepy.Status, res: List[str]) -> None:
         status (tweepy.Status): 元のtweetのstatus
         res (List[str]): 指摘する内容
     """
-    tweet = f'@{status.author.screen_name} JISなら{"，".join(res)}では？🤔🤔🤔'
+    tweet = f'@{status.author.screen_name} JISなら{"，".join(sorted(set(res), key=res.index))}では？🤔🤔🤔'
     api.update_status(status=tweet, in_reply_to_status_id=status.id)
 
 
