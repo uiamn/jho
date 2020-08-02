@@ -97,7 +97,7 @@ def detect_and_correct(tweet: str) -> List[str]:
     res = []
 
     for line in p:
-        if "RT @" not in line[0][0:4] and not is_conform(w := line[0]):
+        if "RT @" not in tweet[:4] and not is_conform(w := line[0]):
             while w[-1] == 'ー':
                 w = w[:-1]
             res.append(w)
