@@ -35,7 +35,10 @@ def main() -> None:
     else:
         tl: List[tweepy.Status] = get_timeline()
         for t in tl:
-            res = detect_and_correct(t.text)
+            tweet = t.text
+            if tweet[:4] == 'RT @':
+                continue
+            res = detect_and_correct(tweet)
             if len(res) > 0:
                 reply(t, res)
 
@@ -97,7 +100,7 @@ def detect_and_correct(tweet: str) -> List[str]:
     res = []
 
     for line in p:
-        if "RT @" not in tweet[:4] and not is_conform(w := line[0]):
+        if not is_conform(w := line[0]):
             while w[-1] == 'ー':
                 w = w[:-1]
             res.append(w)
