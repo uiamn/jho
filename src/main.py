@@ -9,7 +9,7 @@ from typing import List
 DEBUG = False
 LTI_FILEPATH = os.path.join(os.path.dirname(__file__), 'LATEST_TWEET_ID')
 KATAKANA_REGEX = re.compile(r'[\u30A1-\u30FF]+')
-IGNORE_CHARS_REGEX = re.compile(r'[ァィゥェォャュョー]')
+IGNORE_CHARS_REGEX = re.compile(r'[ァィゥェォャュョ]')
 
 # MeCab
 mcb = MeCab.Tagger(
@@ -81,7 +81,7 @@ def is_conform(t: str) -> bool:
         * カタカナからなる語ではない
         * 文字列長が3以下
         * tの音数が2音以下
-        ただし音数とは，最後の長音を含めた総文字数-文字列に含まれる"ァィゥェォャュョー"の個数のことを云ふ
+        ただし音数とは，最後の長音を含めた総文字数-文字列に含まれる"ァィゥェォャュョ"の個数のことを云ふ
     """
     return (
         t[0] == 'ー'
