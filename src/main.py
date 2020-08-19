@@ -81,14 +81,14 @@ def is_conform(t: str) -> bool:
         * カタカナからなる語ではない
         * 文字列長が3以下
         * tの音数が2音以下
-        ただし音数とは，最後の長音を含めた総文字数-文字列に含まれる"ァィゥェォャュョ"の個数のことを云ふ
+        ただし音数とは，最後の長音を含めない総文字数-文字列に含まれる"ァィゥェォャュョ"の個数のことを云ふ
     """
     return (
         t[0] == 'ー'
         or t[-1] != 'ー'
         or KATAKANA_REGEX.fullmatch(t) is None
         or len(t) <= 3
-        or len(t) - len(IGNORE_CHARS_REGEX.findall(t)) <= 2
+        or len(t) - len(IGNORE_CHARS_REGEX.findall(t)) <= 3
     )
 
 
