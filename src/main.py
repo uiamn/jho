@@ -99,11 +99,15 @@ def detect_and_correct(tweet: str) -> List[str]:
 
     res = []
 
-    for line in p:
+    for i, line in enumerate(p):
         if not is_conform(w := line[0]):
             while w[-1] == 'ー':
                 w = w[:-1]
             res.append(w)
+        elif i >= 2 and line[0] == 'ー':
+            # 検索避け用の記号を検出する
+            if p[i-1][0] in [',', '.', '_', '|', "'", ' ',]:
+                res.append(p[i-2][0])
 
     return res
 
