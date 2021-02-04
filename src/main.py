@@ -58,7 +58,7 @@ def get_timeline() -> List[tweepy.Status]:
         if latest_tweet_id is None:
             tl = api.home_timeline(count=200)
         else:
-            tl = api.home_timeline(latest_tweet_id, count=200)
+            tl = api.home_timeline(since_id=latest_tweet_id, count=200)
 
     # update LATEST_TWEET_ID
     if len(tl) > 0:
@@ -83,6 +83,9 @@ def is_conform(t: str) -> bool:
         * tの音数が2音以下
         ただし音数とは，最後の長音を含めない総文字数-文字列に含まれる"ァィゥェォャュョ"の個数のことを云ふ
     """
+    if len(t) == 0:
+        return True
+    
     return (
         t[0] == 'ー'
         or t[-1] != 'ー'
