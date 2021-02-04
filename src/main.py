@@ -1,6 +1,7 @@
 import MeCab
 import tweepy
 import dotenv
+import re
 import os
 from typing import List
 
@@ -9,6 +10,7 @@ from is_conform import is_conform
 # global variables
 DEBUG = False
 LTI_FILEPATH = os.path.join(os.path.dirname(__file__), 'LATEST_TWEET_ID')
+LONG_VOWELS = re.compile(r'[ー〜\-~]')
 
 # MeCab
 mcb = MeCab.Tagger(
@@ -76,7 +78,7 @@ def detect_and_correct(tweet: str) -> List[str]:
     res = []
 
     for i, line in enumerate(p):
-        if not is_conform(w := line[0]):
+        if not is_conform(w := re.sub(LONG_VOWELS, 'ー', line[0])):
             while w[-1] in ['ー', '〜', '-', '~']:
                 w = w[:-1]
             res.append(w)
