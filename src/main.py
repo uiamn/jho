@@ -71,6 +71,10 @@ def get_timeline() -> List[tweepy.Status]:
 
 def detect_and_correct(tweet: str) -> List[str]:
     tweet = tweet.replace(' ', '.')
+    # mecabは〜を長音だと認識しない場合があるので
+    # ここで長音を全て'ー'に置き換へる必要がある
+    tweet = re.sub(LONG_VOWELS, 'ー', tweet)
+
     p = mcb.parse(tweet)
     p = p.split('\n')[:-2]
     p = [a.replace('\t', ',').split(',') for a in p]
@@ -78,11 +82,11 @@ def detect_and_correct(tweet: str) -> List[str]:
     res = []
 
     for i, line in enumerate(p):
-        if not is_conform(w := re.sub(LONG_VOWELS, 'ー', line[0])):
-            while w[-1] in ['ー', '〜', '-', '~']:
+        if not is_conform(w := line[0]):
+            while w[-1] == 'ー':
                 w = w[:-1]
             res.append(w)
-        elif i >= 2 and line[0] == 'ー':
+        elif i >= 2 and line[0] in ['ー', '〜', '-', '~']:
             # 検索避け用の記号を検出する
             if p[i-1][0] in [',', '.', '_', '|', "'", ' ']:
                 res.append(p[i-2][0])
