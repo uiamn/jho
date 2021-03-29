@@ -10,7 +10,7 @@ from is_conform import is_conform
 # global variables
 DEBUG = False
 LTI_FILEPATH = os.path.join(os.path.dirname(__file__), 'LATEST_TWEET_ID')
-LONG_VOWELS = re.compile(r'[ー〜]')
+LONG_VOWELS = re.compile(r'[ー一〜]')
 
 # MeCab
 mcb = MeCab.Tagger(
