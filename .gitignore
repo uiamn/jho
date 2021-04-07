@@ -1,2 +1,3 @@
 src/.env
 src/LATEST_TWEET_ID
+src/FOLLOWERS_IDS.json

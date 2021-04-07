@@ -1,9 +1,11 @@
+import json
+import os
+import re
+from typing import List
+
+import dotenv
 import MeCab
 import tweepy
-import dotenv
-import re
-import os
-from typing import List
 
 from is_conform import is_conform
 
@@ -11,6 +13,7 @@ from is_conform import is_conform
 DEBUG = False
 LTI_FILEPATH = os.path.join(os.path.dirname(__file__), 'LATEST_TWEET_ID')
 LONG_VOWELS = re.compile(r'[ー一ㅡ〜]')
+
 
 # MeCab
 mcb = MeCab.Tagger(
@@ -34,9 +37,14 @@ def main() -> None:
             s = input('DEBUG MODE > ')
             print(detect_and_correct(s))
     else:
+        update_followers_list()
+
+        with open('FOLLOWERS_IDS.json') as f:
+            fids = json.load(f)
+
         tl = get_timeline()
         # フォローされてゐるユーザのみ指摘対象にする
-        tl = filter(lambda x: x.user.following, tl)
+        tl = filter(lambda x: x.user.id in fids, tl)
 
         for t in tl:
             tweet = t.text
@@ -45,6 +53,12 @@ def main() -> None:
             res = detect_and_correct(tweet)
             if len(res) > 0:
                 reply(t, res)
+
+
+def update_followers_list() -> None:
+    followers_ids = api.followers_ids()
+    with open('FOLLOWERS_IDS.json', 'w') as f:
+        json.dump(followers_ids, f)
 
 
 def get_timeline() -> List[tweepy.Status]:
