@@ -34,7 +34,10 @@ def main() -> None:
             s = input('DEBUG MODE > ')
             print(detect_and_correct(s))
     else:
-        tl: List[tweepy.Status] = get_timeline()
+        tl = get_timeline()
+        # フォローされてゐるユーザのみ指摘対象にする
+        tl = filter(lambda x: x.user.following, tl)
+
         for t in tl:
             tweet = t.text
             if tweet[:4] == 'RT @':
