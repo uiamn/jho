@@ -10,7 +10,7 @@ import tweepy
 from is_conform import is_conform
 
 # global variables
-DEBUG = False
+DEBUG = True
 LTI_FILEPATH = os.path.join(os.path.dirname(__file__), 'LATEST_TWEET_ID')
 LONG_VOWELS = re.compile(r'[ー一ㅡ〜]')
 
@@ -87,7 +87,7 @@ def get_timeline() -> List[tweepy.Status]:
 
 
 def detect_and_correct(tweet: str) -> List[str]:
-    tweet = tweet.replace(' ', '.')
+    tweet = tweet.replace(' ', '。')
     # mecabは〜を長音だと認識しない場合があるので
     # ここで長音を全て'ー'に置き換へる必要がある
     tweet = re.sub(LONG_VOWELS, 'ー', tweet)
