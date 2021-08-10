@@ -12,7 +12,7 @@ from is_conform import is_conform
 # global variables
 DEBUG = False
 LTI_FILEPATH = os.path.join(os.path.dirname(__file__), 'LATEST_TWEET_ID')
-LONG_VOWELS = re.compile(r'[ー一ㅡ〜]+')
+LONG_VOWELS = re.compile(r'[ーㅡ〜]+')
 
 
 # MeCab
@@ -93,6 +93,9 @@ def detect_and_correct(tweet: str) -> List[str]:
     tweet = re.sub(LONG_VOWELS, 'ー', tweet)
 
     p = mcb.parse(tweet)
+    if DEBUG:
+        print(p)
+
     p = p.split('\n')[:-2]
     p = [a.replace('\t', ',').split(',') for a in p]
 
